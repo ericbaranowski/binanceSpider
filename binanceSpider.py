@@ -6,6 +6,7 @@ from json import loads
 from urllib import request
 from random import choice
 from time import sleep
+from pymongo import MongoClient
 
 
 def getAllCoin(url, headers, tradeType):
@@ -130,36 +131,46 @@ class binanceSpider(object):
     # def __inin__(self):
     def __prepareWork(self):
         self.allHeaders = getAllHeaders()
+        # setup DB
+        # self.mongoClient = MongoClient("mongodb://binance:binance@127.0.0.1:27017/binancedb")
+        # self.db = self.mongoClient['binancedb']
+        # get related coin
         self.allTradeWithBTC = getAllCoin(self.productsUrl, choice(self.allHeaders), 'BTC')
         self.allTradeWithUSDT = getAllCoin(self.productsUrl, choice(self.allHeaders), 'USDT')
 
     def startGetAggTrades(self):
-        self.priceWithBTCProcess = []
-        self.priceWithUSDTProcess = []
+        self.process = []
+        # self.priceWithBTCProcess = []
+        # self.priceWithUSDTProcess = []
+        # self.marketProcess = []
         self.__prepareWork()
         print('Start Work')
-        # self.__getCurrentPrice('BTC')
-        # self.__getAggTrades('BTC', 20, 'USDT')
+        mp = multiprocessing.Process(target=self.__getCurrentPrice, args=('BTC',))
+        mp.start()
+        self.process.append(mp)
 
-        # for coin in self.allTradeWithUSDT:
-        #     p = multiprocessing.Process(target=self.__getAggTrades, args=(coin, 20, 'USDT'))
-        #     p.start()
-        #     self.priceWithUSDTProcess.append(p)
+        mp = multiprocessing.Process(target=self.__getCurrentPrice, args=('USDT',))
+        mp.start()
+        self.process.append(mp)
 
-        # for p in self.priceWithUSDTProcess:
-        #     p.join()
+        for coin in self.allTradeWithUSDT:
+            p = multiprocessing.Process(target=self.__getAggTrades, args=(coin, 20, 'USDT'))
+            p.start()
+            self.process.append(p)
 
         for coin in self.allTradeWithBTC:
             p = multiprocessing.Process(target=self.__getAggTrades, args=(coin, 20, 'BTC'))
             p.start()
-            self.priceWithBTCProcess.append(p)
+            self.process.append(p)
 
-        for p in self.priceWithBTCProcess:
+        for p in self.process:
             p.join()
-
             
-
     def __getCurrentPrice(self, tradeType):
+        marketType = "coinmarket" + tradeType
+        mongoClient = MongoClient("mongodb://binance:binance@127.0.0.1:27017/binancedb")
+        db = mongoClient['binancedb']
+        market = db[marketType]
         while True:
             context = ssl._create_unverified_context()
             req = request.Request(self.productsUrl, headers=choice(self.allHeaders))
@@ -172,12 +183,17 @@ class binanceSpider(object):
             for d in data:
                 if d['symbol'].endswith(tradeType):
                     # print('CoinName:%s, Current Price:%s' % (d['baseAsset'], d['close']))
-                    coins.append(d)
+                    # coins.append(d)
+                    market.insert(d)
             
             # print("Length:%d" % len(coins))
             sleep(60)
 
     def __getAggTrades(self, coin, limit, tradeType):
+        coinTrade = coin + "with" + tradeType
+        mongoClient = MongoClient("mongodb://binance:binance@127.0.0.1:27017/binancedb")
+        db = mongoClient['binancedb']
+        aggTrade = db[coinTrade]
         latestTimestamp = 0
         symbol = coin+tradeType
         url = self.tradesUrl % (limit, symbol)
@@ -196,7 +212,9 @@ class binanceSpider(object):
             latestTimestamp = jsonBody[-1]['T']
             newTrades = jsonBody[index:]
             # print('CoinName:%s, newst trade:%s' % (coin, newTrades))
-            print("CoinName:%s, Length:%d" % (coin, len(newTrades)))
+            # print("CoinName:%s, Length:%d" % (coin, len(newTrades)))
+            for trade in newTrades:
+                aggTrade.insert(trade)
 
             if coin == 'BTC' or coin == 'ETH' or coin == 'IOTA':
                 sleep(15)
