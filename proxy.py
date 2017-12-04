@@ -73,7 +73,7 @@ class proxy(object):
             print('content:%s, ip:%s' % (content, ip))
             if content == ip:
                 self.proxyList.append(proxy)
-
+        self.checking = False
         if len(self.proxyList) == 0:
             sleep(60)
             self.__getProxy()
