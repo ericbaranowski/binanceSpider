@@ -234,9 +234,9 @@ class binanceSpider(object):
                 aggTrade.insert(trade)
 
             if coin == 'BTC' or coin == 'ETH' or coin == 'IOTA':
-                sleep(10,20)
+                sleep(randint(10,20))
             else:
-                sleep(35, 55)
+                sleep(randint(35, 55))
 
 if __name__ == '__main__':
     # productsUrl = 'https://www.binance.com/exchange/public/product'
