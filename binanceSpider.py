@@ -3,6 +3,7 @@
 import ssl
 import multiprocessing
 from json import loads
+from random import randint
 from urllib import request
 from random import choice
 from time import sleep
@@ -193,7 +194,7 @@ class binanceSpider(object):
                     market.insert(d)
             
             # print("Length:%d" % len(coins))
-            sleep(60)
+            sleep(randint(50,70))
 
     def __getAggTrades(self, coin, limit, tradeType):
         coinTrade = coin + "with" + tradeType
@@ -233,9 +234,9 @@ class binanceSpider(object):
                 aggTrade.insert(trade)
 
             if coin == 'BTC' or coin == 'ETH' or coin == 'IOTA':
-                sleep(15)
+                sleep(10,20)
             else:
-                sleep(45)
+                sleep(35, 55)
 
 if __name__ == '__main__':
     # productsUrl = 'https://www.binance.com/exchange/public/product'
