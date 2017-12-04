@@ -2,14 +2,21 @@
 
 from urllib import request
 from random import choice
+from time import sleep
 from bs4 import BeautifulSoup
 
 class proxy(object):
     proxyUrls = ['http://www.xicidaili.com/']
     testUrl = 'http://icanhazip.com/'
     proxyList = []
+    checking = False
 
     def __getProxy(self):
+        if self.checking == True:
+            print('Checking, please wait')
+            sleep(60)
+            return
+        self.checking = True
         headers = {}
         unCheckproxyList = []
         headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.75 Safari/537.36'
@@ -55,7 +62,7 @@ class proxy(object):
             request.install_opener(opener)
             try:
                 #response = request.urlopen(self.testUrl, timeout=3)
-                response = request.urlopen(self.testUrl)
+                response = request.urlopen(self.testUrl, timeout=5)
             except:
                 print('%s proxy can not use, continue' % proxy)
                 continue
@@ -67,12 +74,29 @@ class proxy(object):
             if content == ip:
                 self.proxyList.append(proxy)
 
+        if len(self.proxyList) == 0:
+            sleep(60)
+            self.__getProxy()
+            return
         print('Length:%d' % len(self.proxyList))
 
     def randomChoice(self):
-        if len(self.proxyList) == 0:
-            return None
-        return choice(self.proxyList)
+        # if len(self.proxyList) == 0:
+        #     self.__getProxy()
+        #     return self.randomChoice()
+        # return choice(self.proxyList)
+
+        try:
+            return choice(self.proxyList)
+        except IndexError:
+            self.__getProxy()
+            return self.randomChoice()
+
+    def removeProxy(self, aproxy):
+        try:
+            self.proxyList.remove(aproxy)
+        except ValueError:
+            print('alread removed, ignore')
 
 
 if __name__ == "__main__":

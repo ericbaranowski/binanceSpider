@@ -7,6 +7,7 @@ from urllib import request
 from random import choice
 from time import sleep
 from pymongo import MongoClient
+from proxy import proxy
 
 
 def getAllCoin(url, headers, tradeType):
@@ -126,23 +127,18 @@ def getCurrentPrice(url, headers, tradeType, timestamp):
 class binanceSpider(object):
     productsUrl = 'https://www.binance.com/exchange/public/product'
     tradesUrl = 'https://www.binance.com/api/v1/aggTrades?limit=%d&symbol=%s'
+    proxyObj = proxy()
 
     
     # def __inin__(self):
     def __prepareWork(self):
         self.allHeaders = getAllHeaders()
-        # setup DB
-        # self.mongoClient = MongoClient("mongodb://binance:binance@127.0.0.1:27017/binancedb")
-        # self.db = self.mongoClient['binancedb']
-        # get related coin
+        self.proxyObj.startGetProxy()
         self.allTradeWithBTC = getAllCoin(self.productsUrl, choice(self.allHeaders), 'BTC')
         self.allTradeWithUSDT = getAllCoin(self.productsUrl, choice(self.allHeaders), 'USDT')
 
     def startGetAggTrades(self):
         self.process = []
-        # self.priceWithBTCProcess = []
-        # self.priceWithUSDTProcess = []
-        # self.marketProcess = []
         self.__prepareWork()
         print('Start Work')
         mp = multiprocessing.Process(target=self.__getCurrentPrice, args=('BTC',))
@@ -173,8 +169,18 @@ class binanceSpider(object):
         market = db[marketType]
         while True:
             context = ssl._create_unverified_context()
+            aproxy = self.proxyObj.randomChoice()
+            choiceProxy = {'http': aproxy}
+            proxy_support = request.ProxyHandler(choiceProxy)
+            opener = request.build_opener(proxy_support)
+            request.install_opener(opener)
             req = request.Request(self.productsUrl, headers=choice(self.allHeaders))
-            res = request.urlopen(req, context=context)
+            try:
+                res = request.urlopen(req, context=context)
+            except:
+                print('%s proxy can not use, remove' % aproxy)
+                self.proxyObj.removeProxy(aproxy)
+                continue
             body = res.read()
             body = body.decode('utf8')
             jsonBody = loads(body)
@@ -182,7 +188,7 @@ class binanceSpider(object):
             coins = []
             for d in data:
                 if d['symbol'].endswith(tradeType):
-                    # print('CoinName:%s, Current Price:%s' % (d['baseAsset'], d['close']))
+                    print('Insert CoinName:%s, Current Price:%s' % (d['baseAsset'], d['close']))
                     # coins.append(d)
                     market.insert(d)
             
@@ -199,8 +205,18 @@ class binanceSpider(object):
         url = self.tradesUrl % (limit, symbol)
         while True:
             context = ssl._create_unverified_context()
+            aproxy = self.proxyObj.randomChoice()
+            choiceProxy = {'http': aproxy}
+            proxy_support = request.ProxyHandler(choiceProxy)
+            opener = request.build_opener(proxy_support)
+            request.install_opener(opener)
             req = request.Request(url, headers=choice(self.allHeaders))
-            res = request.urlopen(req, context=context)
+            try:
+                res = request.urlopen(req, context=context)
+            except:
+                print('%s proxy can not use, remove' % aproxy)
+                self.proxyObj.removeProxy(aproxy)
+                continue
             body = res.read()
             body = body.decode('utf8')
             jsonBody = loads(body)
@@ -212,7 +228,7 @@ class binanceSpider(object):
             latestTimestamp = jsonBody[-1]['T']
             newTrades = jsonBody[index:]
             # print('CoinName:%s, newst trade:%s' % (coin, newTrades))
-            # print("CoinName:%s, Length:%d" % (coin, len(newTrades)))
+            print("Insert CoinName:%s, Length:%d" % (coin, len(newTrades)))
             for trade in newTrades:
                 aggTrade.insert(trade)
 
