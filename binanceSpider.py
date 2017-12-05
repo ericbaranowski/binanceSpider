@@ -44,10 +44,7 @@ class binanceSpider(object):
     tradesUrl = 'https://www.binance.com/api/v1/aggTrades?limit=%d&symbol=%s'
     proxyObj = proxy()
 
-    
-    # def __inin__(self):
     def __prepareWork(self):
-        # self.allHeaders = getAllHeaders()
         self.proxyObj.startGetProxy()
         self.allTradeWithBTC = getAllCoin(self.productsUrl, common.getRandomHeaders('binanceProduct'), 'BTC')
         self.allTradeWithUSDT = getAllCoin(self.productsUrl, common.getRandomHeaders('binanceProduct'), 'USDT')
@@ -104,10 +101,8 @@ class binanceSpider(object):
             for d in data:
                 if d['symbol'].endswith(tradeType):
                     print('Insert CoinName:%s, Current Price:%s' % (d['baseAsset'], d['close']))
-                    # coins.append(d)
                     market.insert(d)
             
-            # print("Length:%d" % len(coins))
             sleep(randint(50,70))
 
     def __getAggTrades(self, coin, limit, tradeType):
@@ -142,7 +137,6 @@ class binanceSpider(object):
                     break
             latestTimestamp = jsonBody[-1]['T']
             newTrades = jsonBody[index:]
-            # print('CoinName:%s, newst trade:%s' % (coin, newTrades))
             print("Insert CoinName:%s, Length:%d" % (coin, len(newTrades)))
             for trade in newTrades:
                 aggTrade.insert(trade)
@@ -153,12 +147,5 @@ class binanceSpider(object):
                 sleep(randint(35, 55))
 
 if __name__ == '__main__':
-    # productsUrl = 'https://www.binance.com/exchange/public/product'
-    # tradeType = 'USDT'
-    # allHeaders = getAllHeaders()
-    # headers = choice(allHeaders)
-    # coins = getAllCoin(productsUrl, headers, tradeType)
-    # print(coins)
-
     binance = binanceSpider()
     binance.startGetAggTrades()
