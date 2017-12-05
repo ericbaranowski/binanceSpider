@@ -42,10 +42,10 @@ def getCurrentPrice(url, headers, tradeType, timestamp):
 class binanceSpider(object):
     productsUrl = 'https://www.binance.com/exchange/public/product'
     tradesUrl = 'https://www.binance.com/api/v1/aggTrades?limit=%d&symbol=%s'
-    proxyObj = proxy()
+    # proxyObj = proxy()
 
     def __prepareWork(self):
-        self.proxyObj.startGetProxy()
+        # self.proxyObj.startGetProxy()
         self.allTradeWithBTC = getAllCoin(self.productsUrl, common.getRandomHeaders('binanceProduct'), 'BTC')
         self.allTradeWithUSDT = getAllCoin(self.productsUrl, common.getRandomHeaders('binanceProduct'), 'USDT')
 
@@ -81,17 +81,19 @@ class binanceSpider(object):
         market = db[marketType]
         while True:
             context = ssl._create_unverified_context()
-            aproxy = self.proxyObj.randomChoice()
-            choiceProxy = {'http': aproxy}
-            proxy_support = request.ProxyHandler(choiceProxy)
-            opener = request.build_opener(proxy_support)
-            request.install_opener(opener)
+            # aproxy = self.proxyObj.randomChoice()
+            # choiceProxy = {'http': aproxy}
+            # proxy_support = request.ProxyHandler(choiceProxy)
+            # opener = request.build_opener(proxy_support)
+            # request.install_opener(opener)
             req = request.Request(self.productsUrl, headers=common.getRandomHeaders('binanceProduct'))
             try:
                 res = request.urlopen(req, context=context)
-            except:
-                print('%s proxy can not use, remove' % aproxy)
-                self.proxyObj.removeProxy(aproxy)
+            except Exception as e:
+                # print('%s proxy can not use, remove' % aproxy)
+                # self.proxyObj.removeProxy(aproxy)
+                print('%s error happend when getCurrentPrice, sleep 60 second' % e)
+                sleep(randint(50,70))
                 continue
             body = res.read()
             body = body.decode('utf8')
@@ -115,17 +117,19 @@ class binanceSpider(object):
         url = self.tradesUrl % (limit, symbol)
         while True:
             context = ssl._create_unverified_context()
-            aproxy = self.proxyObj.randomChoice()
-            choiceProxy = {'http': aproxy}
-            proxy_support = request.ProxyHandler(choiceProxy)
-            opener = request.build_opener(proxy_support)
-            request.install_opener(opener)
+            # aproxy = self.proxyObj.randomChoice()
+            # choiceProxy = {'http': aproxy}
+            # proxy_support = request.ProxyHandler(choiceProxy)
+            # opener = request.build_opener(proxy_support)
+            # request.install_opener(opener)
             req = request.Request(url, headers=common.getRandomHeaders('binanceTrade'))
             try:
                 res = request.urlopen(req, context=context)
-            except:
-                print('%s proxy can not use, remove' % aproxy)
-                self.proxyObj.removeProxy(aproxy)
+            except Exception as e:
+                # print('%s proxy can not use, remove' % aproxy)
+                # self.proxyObj.removeProxy(aproxy)
+                print('%s error happend when getAggTrades, sleep 60 second' % e)
+                sleep(randint(50,70))
                 continue
             body = res.read()
             body = body.decode('utf8')
