@@ -28,7 +28,7 @@ BASEHEADERS = {'binanceProduct':{'method': 'GET',
                    	 	'Upgrade-Insecure-Requests':'1'
                    	 	},
                    }
-USERAGENTS =  [
+PCUSERAGENTS =  [
     "Mozilla/5.0 (Linux; U; Android 2.3.6; en-us; Nexus S Build/GRK39F) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
     "Avant Browser/1.2.789rel1 (http://www.avantbrowser.com)",
     "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/532.5 (KHTML, like Gecko) Chrome/4.0.249.0 Safari/532.5",
@@ -59,6 +59,9 @@ USERAGENTS =  [
     "Mozilla/3.01Gold (Win95; I)",
     "Mozilla/4.8 [en] (Windows NT 5.1; U)",
     "Mozilla/5.0 (Windows; U; Win98; en-US; rv:1.4) Gecko Netscape/7.1 (ax)",
+]
+
+MOBILEUSERAGENTS= [
     "HTC_Dream Mozilla/5.0 (Linux; U; Android 1.5; en-ca; Build/CUPCAKE) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
     "Mozilla/5.0 (hp-tablet; Linux; hpwOS/3.0.2; U; de-DE) AppleWebKit/534.6 (KHTML, like Gecko) wOSBrowser/234.40.1 Safari/534.6 TouchPad/1.0",
     "Mozilla/5.0 (Linux; U; Android 1.5; en-us; sdk Build/CUPCAKE) AppleWebkit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
@@ -94,11 +97,27 @@ USERAGENTS =  [
 ]
 
 
-def getRandomHeaders(webName):
-    userAgent = choice(USERAGENTS)
+def getRandomHeaders(webName, userAgentsType='All'):
+    if userAgentsType == 'PC':
+        userAgent = choice(PCUSERAGENTS)
+    elif userAgentsType == 'Mobile':
+        userAgent = choice(MOBILEUSERAGENTS)
+    else:
+        allUserAgents = PCUSERAGENTS + MOBILEUSERAGENTS
+        userAgent = choice(allUserAgents)
+
     baseHeaders = BASEHEADERS[webName]
     baseHeaders['user-agent'] = userAgent
     return baseHeaders
+
+def getRandomUserAgents(userAgentsType='All'):
+    if userAgentsType == 'PC':
+        return choice(PCUSERAGENTS)
+    elif userAgentsType == 'Mobile':
+        return choice(MOBILEUSERAGENTS)
+    else:
+        allUserAgents = PCUSERAGENTS + MOBILEUSERAGENTS
+        return choice(allUserAgents)
 
 
 if __name__ == '__main__':

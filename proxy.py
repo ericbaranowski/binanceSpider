@@ -18,10 +18,10 @@ class proxy(object):
             sleep(60)
             return
         self.checking = True
-        # headers = {}
+        headers = {}
         unCheckproxyList = []
-        headers = common.getRandomHeaders('xici')
-        # headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.75 Safari/537.36'
+        # headers = common.getRandomHeaders('xici', 'PC')
+        headers['user-agent'] = common.getRandomUserAgents()
         for proxyUrl in self.proxyUrls:
             try:
                 req = request.Request(proxyUrl, headers=headers)
