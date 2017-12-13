@@ -11,9 +11,8 @@ from bs4 import BeautifulSoup
 
 
 class proxy(object):
-    # proxyUrls = ['http://www.xicidaili.com/']
-    # proxyUrls = {'ip3366':'http://www.ip3366.net/free/?stype=2', 'xici':'http://www.xicidaili.com/', '89ip':'http://www.89ip.cn/tiqv.php?sxb=&tqsl=30&ports=&ktip=&xl=on&submit=%CC%E1++%C8%A1', 'xdaili':'http://www.xdaili.cn/ipagent//freeip/getFreeIps?page=1&rows=10', 'kuaidaili':'http://www.kuaidaili.com/free/intr/', 'cnproxy':'http://cn-proxy.com/'}
-    proxyUrls = {'kuaidaili':'http://www.kuaidaili.com/free/intr/'}
+    proxyUrls = {'ip3366':'http://www.ip3366.net/free/?stype=2', 'xici':'http://www.xicidaili.com/', '89ip':'http://www.89ip.cn/tiqv.php?sxb=&tqsl=30&ports=&ktip=&xl=on&submit=%CC%E1++%C8%A1', 'xdaili':'http://www.xdaili.cn/ipagent//freeip/getFreeIps?page=1&rows=10', 'kuaidaili':'http://www.kuaidaili.com/free/intr/', 'cnproxy':'http://cn-proxy.com/'}
+    #proxyUrls = {'cnproxy':'http://cn-proxy.com/'}
     testUrl = 'http://icanhazip.com/'
     proxyDict = {}
     checking = False
@@ -65,6 +64,20 @@ class proxy(object):
                     continue
                 proxy = '%s:%d' % (ip, port)
                 ipDict[proxy] = httpType
+
+        elif webSite == "cnproxy":
+            print('go to cnproxy')
+            tbodyResult = soup.find_all('tbody')
+            for tbody in tbodyResult:
+                trResult = tbody.find_all('tr')
+                for tr in trResult:
+                    try:
+                        ip = tr.find_all('td')[0].get_text()
+                        port = int(tr.find_all('td')[1].get_text())
+                    except (IndexError, ValueError):
+                        continue
+                    proxy = '%s:%d' % (ip, port)
+                    ipDict[proxy] = 'http'
 
         elif webSite == '89ip':
             print('go to 89ip')
