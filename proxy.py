@@ -178,7 +178,7 @@ class proxy(object):
             print('alread removed, ignore')
 
     def showAllProxy(self):
-        print('allProxy:', self.proxyDict)
+        return self.proxyDict
 
 
 #if __name__ == "__main__":
