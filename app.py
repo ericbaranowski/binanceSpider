@@ -9,7 +9,7 @@ def index():
 
 @app.route('/randomProxy')
 def randomproxy():
-    return proxyApp.randomChoice()
+    return str(proxyApp.randomChoice())
 
 @app.route('/showAllProxy')
 def showAllProxy():
