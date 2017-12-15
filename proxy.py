@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 
 class proxy(object):
     proxyUrls = {'ip3366':'http://www.ip3366.net/free/?stype=2', 'xici':'http://www.xicidaili.com/', '89ip':'http://www.89ip.cn/tiqv.php?sxb=&tqsl=30&ports=&ktip=&xl=on&submit=%CC%E1++%C8%A1', 'xdaili':'http://www.xdaili.cn/ipagent//freeip/getFreeIps?page=1&rows=10', 'kuaidaili':'http://www.kuaidaili.com/free/intr/', 'cnproxy':'http://cn-proxy.com/'}
-    #proxyUrls = {'cnproxy':'http://cn-proxy.com/'}
+    #proxyUrls = {'ip3366':'http://www.ip3366.net/free/?stype=2'}
     testUrl = 'http://icanhazip.com/'
     proxyDict = {}
     checking = False
@@ -121,7 +121,7 @@ class proxy(object):
                 proxy = '%s:%d' % (ip, port)
                 ipDict[proxy] = httpType
 
-        print('allUncheckProxy:', ipDict)
+        #print('allUncheckProxy:', ipDict)
         return ipDict
 
     def __getProxy(self):
@@ -135,7 +135,7 @@ class proxy(object):
             # tmpProxyDict = self.__getSpecifyUrl(key, value)
             unCheckProxyDict = dict(unCheckProxyDict, **self.__getSpecifyUrl(key, value))
 
-        print('unCheckProxyDict:', len(unCheckProxyDict))
+        #print('unCheckProxyDict:', len(unCheckProxyDict))
         self.checkProxy(unCheckProxyDict)
 
     def startGetProxy(self):
@@ -145,7 +145,7 @@ class proxy(object):
     def checkProxy(self, proxyDict):
         for proxy, httpType in proxyDict.items():
             choiceProxy = {httpType.lower(): proxy}
-            print('choiceProxy:', choiceProxy)
+            #print('choiceProxy:', choiceProxy)
             proxy_support = request.ProxyHandler(choiceProxy)
             opener = request.build_opener(proxy_support)
             request.install_opener(opener)
@@ -159,22 +159,17 @@ class proxy(object):
             ip = proxy.split(':')[0]
             content = content.decode('utf8')
             content = content.strip('\n')
-            print('content:%s, ip:%s' % (content, ip))
+            #print('content:%s, ip:%s' % (content, ip))
             if content == ip:
                 self.proxyDict[proxy] = httpType
         self.checking = False
-        if len(self.proxyDict) == 0:
-            sleep(60)
-            self.__getProxy()
-            return
-        print('Length:%d' % len(self.proxyDict))
+        #print('Length:%d' % len(self.proxyDict))
 
     def randomChoice(self):
         try:
             return choice(list(self.proxyDict.items()))
         except IndexError:
-            self.__getProxy()
-            return self.randomChoice()
+            return
 
     def removeProxy(self, aproxy):
         try:
@@ -186,10 +181,11 @@ class proxy(object):
         print('allProxy:', self.proxyDict)
 
 
-if __name__ == "__main__":
-    ipProxy = proxy()
-    ipProxy.startGetProxy()
-    ipProxy.showAllProxy()
+#if __name__ == "__main__":
+#    ipProxy = proxy()
+#    ipProxy.startGetProxy()
+#    ipProxy.showAllProxy()
+
     # aproxy = ipProxy.randomChoice()
     # print('proxy:', aproxy)
 
