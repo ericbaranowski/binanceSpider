@@ -176,6 +176,7 @@ class proxy(object):
             self.proxyDict.pop(aproxy)
         except KeyError:
             print('alread removed, ignore')
+        return
 
     def showAllProxy(self):
         return self.proxyDict

@@ -9,7 +9,6 @@ from urllib import request
 from random import choice
 from time import sleep
 from pymongo import MongoClient
-from proxy import proxy
 
 
 def getAllCoin(url, headers, tradeType):
@@ -42,10 +41,8 @@ def getCurrentPrice(url, headers, tradeType, timestamp):
 class binanceSpider(object):
     productsUrl = 'https://www.binance.com/exchange/public/product'
     tradesUrl = 'https://www.binance.com/api/v1/aggTrades?limit=%d&symbol=%s'
-    # proxyObj = proxy()
 
     def __prepareWork(self):
-        # self.proxyObj.startGetProxy()
         self.allTradeWithBTC = getAllCoin(self.productsUrl, common.getRandomHeaders('binanceProduct'), 'BTC')
         self.allTradeWithUSDT = getAllCoin(self.productsUrl, common.getRandomHeaders('binanceProduct'), 'USDT')
 

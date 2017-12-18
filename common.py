@@ -3,6 +3,7 @@
 import io
 import gzip
 from random import choice
+from urllib import request
 
 BASEHEADERS = {'binanceProduct':{'method': 'GET',
                         'scheme': 'https',
@@ -153,6 +154,19 @@ def gunzip_bytes_obj(bytes_obj):
         gunzipped_bytes_obj = fo.read()
 
     return gunzipped_bytes_obj.decode()
+
+
+def getRandomProxy():
+    url = 'http://45.62.96.7:5000/randomProxy'
+    req = request.Request(url)
+    try:
+        res = request.urlopen(req, timeout=3)
+    except Exception as e:
+        return None
+
+    body = res.read()
+    body = body.undecode('utf8')
+    return eval(body)
 
 
 if __name__ == '__main__':

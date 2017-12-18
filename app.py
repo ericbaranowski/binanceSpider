@@ -17,7 +17,8 @@ def showAllProxy():
 
 @app.route('/removeProxy/<ip>', methods=['GET'])
 def removeProxy(ip):
-    return proxyApp.pop(ip)
+    proxyApp.pop(ip)
+    return
 
 @app.route('/startGetProxy')
 def startGetProxy():
