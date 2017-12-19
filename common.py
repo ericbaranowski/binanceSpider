@@ -165,9 +165,42 @@ def getRandomProxy():
         return None
 
     body = res.read()
-    body = body.undecode('utf8')
+    body = body.decode('utf8')
     return eval(body)
 
+
+def showAllProxy():
+    url = 'http://45.62.96.7:5000/showAllProxy'
+    req = request.Request(url)
+    try:
+        res = request.urlopen(req, timeout=3)
+    except Exception as e:
+        return None
+
+    body = res.read()
+    body = body.decode('utf8')
+    return eval(body)
+
+
+def removeProxy(proxy):
+    url = 'http://45.62.96.7:5000/removeProxy/%s'
+    url = url % proxy
+    req = request.Request(url)
+    try:
+        res = request.urlopen(req, timeout=3)
+    except Exception as e:
+        return None
+    return None
+
+
+def reGetProxy():
+    url = 'http://45.62.96.7:5000/startGetProxy'
+    req = request.Request(url)
+    try:
+        res = request.urlopen(req, timeout=600)
+    except Exception as e:
+        return e
+    return None
 
 if __name__ == '__main__':
     headers = getRandomHeaders('xici')
