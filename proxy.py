@@ -125,11 +125,6 @@ class proxy(object):
         return ipDict
 
     def __getProxy(self):
-        if self.checking == True:
-            print('Checking, please wait')
-            sleep(60)
-            return
-        self.checking = True
         unCheckProxyDict = {}
         for key, value in self.proxyUrls.items():
             # tmpProxyDict = self.__getSpecifyUrl(key, value)
@@ -139,7 +134,17 @@ class proxy(object):
         self.checkProxy(unCheckProxyDict)
 
     def startGetProxy(self):
+        if len(self.proxyDict) != 0:
+            print('Still have proxy')
+            return
+
+        if self.checking == True:
+            print('Checking..., please wait')
+            return
+
+        self.checking = True
         self.__getProxy()
+        self.checking = False
 
 
     def checkProxy(self, proxyDict):
@@ -162,7 +167,6 @@ class proxy(object):
             #print('content:%s, ip:%s' % (content, ip))
             if content == ip:
                 self.proxyDict[proxy] = httpType
-        self.checking = False
         #print('Length:%d' % len(self.proxyDict))
 
     def randomChoice(self):
