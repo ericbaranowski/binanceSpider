@@ -136,15 +136,16 @@ class proxy(object):
     def startGetProxy(self):
         if len(self.proxyDict) != 0:
             print('Still have proxy avaliable')
-            return
+            return None
 
         if self.checking == True:
             print('Checking..., please wait')
-            return
+            return None
 
         self.checking = True
         self.__getProxy()
         self.checking = False
+        return None
 
 
     def checkProxy(self, proxyDict):
