@@ -135,7 +135,7 @@ class proxy(object):
 
     def startGetProxy(self):
         if len(self.proxyDict) != 0:
-            print('Still have proxy')
+            print('Still have proxy avaliable')
             return
 
         if self.checking == True:

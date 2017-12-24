@@ -7,22 +7,27 @@ app = Flask(__name__)
 def index():
     return "Hello, World!"
 
+
 @app.route('/randomProxy')
 def randomproxy():
     return str(proxyApp.randomChoice())
+
 
 @app.route('/showAllProxy')
 def showAllProxy():
     return str(proxyApp.showAllProxy())
 
+
 @app.route('/removeProxy/<ip>', methods=['GET'])
 def removeProxy(ip):
-    proxyApp.pop(ip)
+    proxyApp.removeProxy(ip)
     return
+
 
 @app.route('/startGetProxy')
 def startGetProxy():
-    return proxyApp.startGetProxy()
+    proxyApp.startGetProxy()
+    return
 
 
 if __name__ == '__main__':
