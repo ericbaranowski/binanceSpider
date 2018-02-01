@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import ssl
 import common
 from re import compile
 from json import loads
@@ -11,7 +12,7 @@ from bs4 import BeautifulSoup
 
 
 class proxy(object):
-    proxyUrls = {'ip3366':'http://www.ip3366.net/free/?stype=2', 'xici':'http://www.xicidaili.com/', '89ip':'http://www.89ip.cn/tiqv.php?sxb=&tqsl=30&ports=&ktip=&xl=on&submit=%CC%E1++%C8%A1', 'xdaili':'http://www.xdaili.cn/ipagent//freeip/getFreeIps?page=1&rows=10', 'kuaidaili':'http://www.kuaidaili.com/free/intr/', 'cnproxy':'http://cn-proxy.com/'}
+    proxyUrls = {'ip3366':'http://www.ip3366.net/free/?stype=2', 'xici':'http://www.xicidaili.com/', '89ip':'http://www.89ip.cn/tiqv.php?sxb=&tqsl=30&ports=&ktip=&xl=on&submit=%CC%E1++%C8%A1', 'xdaili':'http://www.xdaili.cn/ipagent//freeip/getFreeIps?page=1&rows=10', 'kuaidaili':'https://www.kuaidaili.com/free/intr/', 'cnproxy':'http://cn-proxy.com/'}
     #proxyUrls = {'ip3366':'http://www.ip3366.net/free/?stype=2'}
     testUrl = 'http://icanhazip.com/'
     proxyDict = {}
@@ -25,8 +26,9 @@ class proxy(object):
             headers = common.getRandomHeaders('kuaidaili', 'PC')
             
         try:
+            context = ssl._create_unverified_context()
             req = request.Request(url, headers=headers)
-            res = request.urlopen(req, timeout=3)
+            res = request.urlopen(req, context=context, timeout=3)
         except Exception as e:
             print('%s error happend when open %s with %s user_agent' % (e, url, headers))
             return ipDict

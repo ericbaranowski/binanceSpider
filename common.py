@@ -2,7 +2,7 @@
 
 import io
 import gzip
-from random import choice
+from random import choice, randint
 from urllib import request
 
 BASEHEADERS = {'binanceProduct':{'method': 'GET',
@@ -41,7 +41,20 @@ BASEHEADERS = {'binanceProduct':{'method': 'GET',
                     'Upgrade-Insecure-Requests':'1',
 
                 },
-                   }
+                '58tongchen':{
+                'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                'Accept-Encoding':'gzip, deflate',
+                'Accept-Language':'en-US,en;q=0.9;q=0.8,zh;q=0.7',
+                'Cache-Control':'max-age=0',
+                'Connection':'keep-alive',
+                'Host':'xm.58.com',
+                # 'If-Modified-Since':'Tue, 24 Oct 2017 02:01:37 GMT',
+                'Referer':'http://xm.58.com',
+                #'Referer':'http://xm.58.com/chuzu/?key=%E8%BD%AF%E4%BB%B6%E5%9B%AD%E4%BA%8C%E6%9C%9F&ispic=1&selpic=2',
+                'Upgrade-Insecure-Requests':'1',
+                },
+            }
+
 PCUSERAGENTS =  [
     # "Mozilla/5.0 (Linux; U; Android 2.3.6; en-us; Nexus S Build/GRK39F) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
     # "Avant Browser/1.2.789rel1 (http://www.avantbrowser.com)",
@@ -146,14 +159,14 @@ def gzip_str(string_):
     return bytes_obj
 
 
-def gunzip_bytes_obj(bytes_obj):
+def gunzip_bytes_obj(bytes_obj, coding='utf8', errors='strict'):
     in_ = io.BytesIO()
     in_.write(bytes_obj)
     in_.seek(0)
     with gzip.GzipFile(fileobj=in_, mode='rb') as fo:
         gunzipped_bytes_obj = fo.read()
 
-    return gunzipped_bytes_obj.decode()
+    return gunzipped_bytes_obj.decode(coding, errors)
 
 
 def getRandomProxy():
@@ -201,6 +214,13 @@ def reGetProxy():
     except Exception as e:
         return e
     return None
+
+
+def takeChoiceProxy():
+    n = randint(1,10)
+    if n > 3:
+        return True
+    return False
 
 if __name__ == '__main__':
     headers = getRandomHeaders('xici')
