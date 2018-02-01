@@ -23,13 +23,13 @@ def showAllProxy():
 @app.route('/removeProxy/<ip>', methods=['GET'])
 def removeProxy(ip):
     proxyApp.removeProxy(ip)
-    return
+    return "remove done"
 
 
 @app.route('/startGetProxy')
 def startGetProxy():
     proxyApp.startGetProxy()
-    return
+    return "get proxy done"
 
 
 if __name__ == '__main__':
